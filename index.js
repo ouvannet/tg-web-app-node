@@ -82,22 +82,25 @@ bot.on('message', async (msg) => {
 });
 
 app.post('/web-data', async(req,res)=>{
-    const{queryId, products, totalPrice} = req.body;
+    const{queryId, products=[], totalPrice} = req.body;
     try{
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
             id: queryId,
             title: 'your payment!',
-            input_message_content:{message_text: 'this is your pay here:'+totalPrice}
+            input_message_content:{message_text: `this is your pay here:${totalPrice},
+            ${products.map(item => item.title).join(', ')},
+            `
+        }
         })
-        return res.status(500).json({});
+        return res.status(200).json({});
     }catch(e){
-        await bot.answerWebAppQuery(queryId, {
-            type: 'article',
-            id: queryId,
-            title: 'your payment!!!!',
-            input_message_content:{message_text: 'this is your pay here::::'}
-        })
+        // await bot.answerWebAppQuery(queryId, {
+        //     type: 'article',
+        //     id: queryId,
+        //     title: 'your payment!!!!',
+        //     input_message_content:{message_text: 'this is your pay here::::'}
+        // })
         return res.status(500).json({});
     }
 })
